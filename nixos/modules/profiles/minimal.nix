@@ -39,4 +39,15 @@ with lib;
   xdg.icons.enable = mkDefault false;
   xdg.mime.enable = mkDefault false;
   xdg.sounds.enable = mkDefault false;
+
+  systemd.services."serial-getty@".environment.TERM = "xterm-256color";
+
+  systemd.services."serial-getty@ttyUSB0" = {
+    enable = true;
+    wantedBy = [ "getty.target" ]; # to start at boot
+    serviceConfig.Restart = "always"; # restart when session is closed
+  };
+
+  users.users.root.extraGroups = [ "dialout" ];
+
 }

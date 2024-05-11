@@ -179,7 +179,7 @@ let
     # Search using a "marker file"
     search --set=root --file /EFI/nixos-installer-image
 
-    insmod gfxterm
+    #insmod gfxterm
     insmod png
     set gfxpayload=keep
     set gfxmode=${concatStringsSep "," [
@@ -321,7 +321,7 @@ let
 
     cat <<EOF > $out/EFI/boot/grub.cfg
 
-    set textmode=${boolToString (config.isoImage.forceTextMode)}
+    set textmode=true
     set timeout=${toString grubEfiTimeout}
 
     clear
@@ -404,7 +404,10 @@ let
       submenu "" {return}
       submenu "Serial console=ttyS0,115200n8" --class serial {
         ${grubMenuCfg}
-        ${buildMenuAdditionalParamsGrub2 "console=ttyS0,115200n8"}
+        serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1
+        terminal_input --append serial
+        terminal_output --append serial
+        ${buildMenuAdditionalParamsGrub2 "console=ttyUSB0,115200n8 console=tty1"}
       }
     }
 
